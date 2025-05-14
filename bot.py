@@ -6,7 +6,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 from config import Config, load_config
-from src.handlers import echo
+from src.handlers import user
 
 
 logger = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ async def main():
     )
     dp: Dispatcher = Dispatcher()
 
-    dp.include_router(echo.router)
+    dp.include_router(user.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
