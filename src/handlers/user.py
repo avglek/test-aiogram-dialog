@@ -8,6 +8,8 @@ from src.dialogs.bot_menu.states import BotMenu, MySG
 
 router: Router = Router()
 
+with open("src/misc/test_data.json", "r") as f:
+
 register_dialogs(router)
 
 @router.message(Command("menu"))

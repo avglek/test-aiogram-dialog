@@ -53,3 +53,18 @@ async def get_product_info(dialog_manager: DialogManager, **middleware_data):
     }
 
     return data
+
+async def get_by_product(dialog_manager: DialogManager, **middleware_data):
+    ctx = dialog_manager.current_context()
+    product_id = ctx.start_data.get('product_id')
+    session = middleware_data.get('session')
+    repo:Repo = middleware_data.get('repo')
+    product = await repo.get_product(session, product_id)
+    quantity = ctx.start_data.get('quantity')
+
+    data = {
+        'product': product,
+        'quantity': quantity,
+        'total_amount': quantity * product.price if quantity else None
+    }
+    return data

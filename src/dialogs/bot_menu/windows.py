@@ -1,4 +1,4 @@
-from aiogram_dialog import Window
+from aiogram_dialog import Window, Data, DialogManager
 from aiogram_dialog.widgets.input import TextInput
 from aiogram_dialog.widgets.kbd import Cancel, Back, Button
 from aiogram_dialog.widgets.text import Const, Format
@@ -58,5 +58,32 @@ def buy_product_window():
             result={'switch_to': SwitchToWindow.SelectProducts}
         ),
         state=states.BuyProduct.enter_amount,
-        getter=getters.get_product
+        getter=getters.get_by_product
     )
+
+def confirm_buy_window():
+    return Window(
+        Format('''
+        You are going to buy {quantity} {product.name} for {total_amount}$
+        Are you sure?
+        '''),
+        Button(
+            Const('Yes'),
+            id='b_confirm_buy',
+            on_click=selected.on_confirm_buy,
+        ),
+        Back(Const('<< Change amount')),
+        Cancel(
+            Const('<< Select another product'),
+            id='cancel_s_t_select_pr',
+            result={'switch_to': SwitchToWindow.SelectProducts},
+        ),
+        state=states.BuyProduct.confirm,
+        getter=getters.get_by_product,
+    )
+
+async def on_process_result(data:Data, result:dict, manager:DialogManager):
+    if result:
+        switch_to_window = result.get('switch_to_window')
+        if switch_to_window == SwitchToWindow.SelectProducts:
+            await manager.switch_to( states.BotMenu.select_products)
